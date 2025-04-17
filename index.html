@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,7 +67,6 @@
 
         #output {
             background: rgba(0, 0, 0, 0.3);
-            padding: 1.5rem;
             border-radius: 5px;
             font-family: monospace;
             white-space: pre-wrap;
@@ -76,6 +76,7 @@
             position: relative;
             margin-top: 1rem;
             color: #fff;
+            padding: 2.5rem 1rem 1rem 1rem;
         }
 
         .copy-button {
@@ -86,11 +87,13 @@
             color: var(--bg-dark);
             border: none;
             border-radius: 5px;
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             font-weight: bold;
             transition: all 0.3s ease;
-            min-width: 70px;
+            min-width: 60px;
             z-index: 10;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
 
         .copy-button:hover {
@@ -109,16 +112,24 @@
             transform: translateX(-50%);
             background: var(--primary-color);
             color: var(--bg-dark);
-            padding: 1rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 5px;
             display: none;
             z-index: 1000;
             animation: fadeIn 0.3s ease;
+            font-weight: bold;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
         }
 
         @media (max-width: 480px) {
@@ -127,9 +138,15 @@
                 margin: 0.5rem;
             }
 
-            .copy-button {
-                padding: 0.5rem;
+            #output {
+                padding: 2.5rem 0.75rem 0.75rem 0.75rem;
                 font-size: 0.9rem;
+            }
+
+            .copy-button {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.85rem;
+                min-width: 55px;
             }
         }
     </style>
@@ -137,14 +154,10 @@
 
 <body class="d-flex flex-column align-items-center p-3">
     <h1 class="main-title text-center">Text → Binary → Morse Code</h1>
-    
+
     <div class="converter-container">
-        <input type="text" 
-               class="form-control"
-               id="textInput" 
-               placeholder="Enter your text and press Enter..."
-               autocomplete="off"
-               autofocus>
+        <input type="text" class="form-control" id="textInput" placeholder="Enter your text and press Enter..."
+            autocomplete="off" autofocus>
         <div id="output"></div>
     </div>
 
@@ -185,7 +198,7 @@
             }, 2000);
         }
 
-        document.getElementById('textInput').addEventListener('input', function(e) {
+        document.getElementById('textInput').addEventListener('input', function (e) {
             const text = this.value;
             if (text) {
                 const binary = textToBinary(text);
@@ -205,4 +218,5 @@
         });
     </script>
 </body>
+
 </html>
