@@ -7,6 +7,9 @@
     <meta name="theme-color" content="#1a1a1a">
     <title>Text To Binary To Morse Code</title>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/icons/icon-192.png">
 
@@ -15,60 +18,50 @@
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root {
+            --primary-color: #00ff88;
+            --bg-dark: #1a1a1a;
+            --bg-darker: #2a2a2a;
         }
 
         body {
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-darker));
             color: #fff;
-            font-family: 'Arial', sans-serif;
             min-height: 100vh;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem;
         }
 
-        h1 {
-            color: #00ff88;
+        .main-title {
+            color: var(--primary-color);
             text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
-            margin-bottom: 2rem;
-            text-align: center;
             font-size: clamp(1.5rem, 4vw, 2.5rem);
-            padding: 0 1rem;
+            margin-bottom: 2rem;
         }
 
-        .container {
+        .converter-container {
             background: rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            width: 95%;
+            padding: 1.5rem;
+            width: 100%;
             max-width: 600px;
+            margin: 0 auto;
         }
 
-        .input-group {
+        .form-control {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 2px solid var(--primary-color) !important;
+            color: #fff !important;
+            font-size: 16px;
+            padding: 0.8rem;
             margin-bottom: 1.5rem;
         }
 
-        input {
-            width: 100%;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #00ff88;
-            border-radius: 5px;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
+        .form-control:focus {
+            box-shadow: 0 0 10px var(--primary-color) !important;
         }
 
-        input:focus {
-            box-shadow: 0 0 10px #00ff88;
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         #output {
@@ -80,22 +73,29 @@
             word-break: break-all;
             min-height: 100px;
             display: none;
-            animation: fadeIn 0.5s ease;
             position: relative;
+            margin-top: 1rem;
+            color: #fff;
         }
 
         .copy-button {
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            background: #00ff88;
-            color: #1a1a1a;
+            background: var(--primary-color);
+            color: var(--bg-dark);
             border: none;
             border-radius: 5px;
             padding: 0.5rem 1rem;
-            cursor: pointer;
             font-weight: bold;
             transition: all 0.3s ease;
+            min-width: 70px;
+            z-index: 10;
+        }
+
+        .copy-button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
 
         .copy-button:active {
@@ -107,44 +107,51 @@
             bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
-            background: #00ff88;
-            color: #1a1a1a;
+            background: var(--primary-color);
+            color: var(--bg-dark);
             padding: 1rem;
             border-radius: 5px;
             display: none;
+            z-index: 1000;
             animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 0.5rem;
-            }
-
-            .container {
+            .converter-container {
                 padding: 1rem;
+                margin: 0.5rem;
             }
 
-            input {
-                font-size: 16px; /* Prevents iOS zoom */
+            .copy-button {
+                padding: 0.5rem;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 
-<body>
-    <h1>Text → Binary → Morse Code Converter</h1>
-    <div class="container">
-        <div class="input-group">
-            <input type="text" id="textInput" placeholder="Enter your text and press Enter..." autofocus>
-        </div>
+<body class="d-flex flex-column align-items-center p-3">
+    <h1 class="main-title text-center">Text → Binary → Morse Code</h1>
+    
+    <div class="converter-container">
+        <input type="text" 
+               class="form-control"
+               id="textInput" 
+               placeholder="Enter your text and press Enter..."
+               autocomplete="off"
+               autofocus>
         <div id="output"></div>
     </div>
+
     <div class="copy-feedback">Copied to clipboard!</div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         if ('serviceWorker' in navigator) {
@@ -154,7 +161,8 @@
         }
 
         const morseCode = {
-            '0': '-----', '1': '.----'
+            '0': '-----',
+            '1': '.----'
         };
 
         function textToBinary(text) {
@@ -177,9 +185,9 @@
             }, 2000);
         }
 
-        document.getElementById('textInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                const text = this.value;
+        document.getElementById('textInput').addEventListener('input', function(e) {
+            const text = this.value;
+            if (text) {
                 const binary = textToBinary(text);
                 const morse = binaryToMorse(binary);
 
@@ -191,6 +199,8 @@
                     ${morse}
                 `;
                 output.style.display = 'block';
+            } else {
+                document.getElementById('output').style.display = 'none';
             }
         });
     </script>
