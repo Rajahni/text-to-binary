@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +15,12 @@
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
             color: #fff;
@@ -25,36 +30,39 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem;
+            padding: 1rem;
         }
 
         h1 {
             color: #00ff88;
             text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
             margin-bottom: 2rem;
+            text-align: center;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            padding: 0 1rem;
         }
 
         .container {
             background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            width: 80%;
+            width: 95%;
             max-width: 600px;
         }
 
         .input-group {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         input {
             width: 100%;
-            padding: 1rem;
+            padding: 0.8rem;
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid #00ff88;
             border-radius: 5px;
             color: #fff;
-            font-size: 1.1rem;
+            font-size: 1rem;
             outline: none;
             transition: all 0.3s ease;
         }
@@ -73,15 +81,56 @@
             min-height: 100px;
             display: none;
             animation: fadeIn 0.5s ease;
+            position: relative;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #00ff88;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:active {
+            transform: scale(0.95);
+        }
+
+        .copy-feedback {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00ff88;
+            color: #1a1a1a;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
             }
 
-            to {
-                opacity: 1;
+            .container {
+                padding: 1rem;
+            }
+
+            input {
+                font-size: 16px; /* Prevents iOS zoom */
             }
         }
     </style>
@@ -95,6 +144,7 @@
         </div>
         <div id="output"></div>
     </div>
+    <div class="copy-feedback">Copied to clipboard!</div>
 
     <script>
         if ('serviceWorker' in navigator) {
@@ -119,6 +169,14 @@
             }).join(' ');
         }
 
+        function showCopyFeedback() {
+            const feedback = document.querySelector('.copy-feedback');
+            feedback.style.display = 'block';
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 2000);
+        }
+
         document.getElementById('textInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 const text = this.value;
@@ -126,11 +184,15 @@
                 const morse = binaryToMorse(binary);
 
                 const output = document.getElementById('output');
+                output.innerHTML = `
+                    <button class="copy-button" onclick="navigator.clipboard.writeText('${morse}').then(() => showCopyFeedback())">
+                        Copy
+                    </button>
+                    ${morse}
+                `;
                 output.style.display = 'block';
-                output.textContent = morse;
             }
         });
     </script>
 </body>
-
 </html>
